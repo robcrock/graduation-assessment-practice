@@ -7,8 +7,11 @@ messageController.postMessage = async (req, res, next) => {
   try {
     const { message, password } = req.body;
 
-    await models.Message.create({ message: message, password: password });
-
+    const newMessage = await models.Message.create({
+      message: message,
+      password: password,
+    });
+    res.locals.messages = newMessage;
     return next();
   } catch (err) {
     return next(err);
@@ -29,12 +32,13 @@ messageController.getMessages = async (req, res, next) => {
 };
 
 messageController.deleteMessages = async (req, res, next) => {
-  console.log('hello from deleteMessages');
   try {
-    const { message, password } = req.body;
+    const { _id } = req.body;
+    console.log('_id', _id);
 
-    await models.Message.create({ message: message, password: password });
-
+    const correctId = await models.Message.findOneAndDelete({ _id: _id });
+    console.log('correctId', correctId);
+    res.locals.deleted = correctId;
     return next();
   } catch (err) {
     return next(err);

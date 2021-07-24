@@ -8,17 +8,38 @@ document.addEventListener('DOMContentLoaded', () => {
       .then((res) => res.json())
       .then((data) => {
         console.log('data from getMessages', data);
-        for (let i = 0; i < data.messages.length; i++) {
-          const message = document.createElement('li');
-          message.setAttribute('id', data.messages[i]._id);
-          message.innerHTML = data.messages[i].message;
-          const messageList = document.getElementById('message-list');
-          messageList.appendChild(message);
-        }
+        showMessages(data);
+
+        // for (let i = 0; i < data.messages.length; i++) {
+        //   const message = document.createElement('li');
+        //   const deleteButton = document.createElement('button');
+        //   deleteButton.innerHTML = 'Delete';
+        //   message.setAttribute('id', data.messages[i]._id);
+        //   message.innerHTML = data.messages[i].message;
+        //   message.appendChild(deleteButton);
+        //   const messageList = document.getElementById('message-list');
+        //   messageList.appendChild(message);
+        //   deleteButton.addEventListener('click', deleteMessage);
+        // }
       });
   }
 
   getMessages();
+
+  function showMessages(msg) {
+    console.log('msg', msg);
+    for (let i = 0; i < msg.messages.length; i++) {
+      const message = document.createElement('li');
+      const deleteButton = document.createElement('button');
+      deleteButton.innerHTML = 'Delete';
+      message.setAttribute('id', msg.messages[i]._id);
+      message.innerHTML = msg.messages[i].message;
+      message.appendChild(deleteButton);
+      const messageList = document.getElementById('message-list');
+      messageList.appendChild(message);
+      deleteButton.addEventListener('click', deleteMessage);
+    }
+  }
 
   function handleInput(e) {
     // console.log('e', e);
@@ -41,12 +62,32 @@ document.addEventListener('DOMContentLoaded', () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        data.messages = [data.messages];
+        console.log('data in post message', data);
+        showMessages(data);
       })
       .catch((err) => console.log(err));
   }
 
-  function deleteMessage() {}
+  function deleteMessage(e) {
+    console.log('e', e.target.parentNode.id);
+    const deleteId = e.target.parentNode.id;
+    fetch('/messages/deleteMessage', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ _id: deleteId }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log('data in delete', data.deleted._id);
+        const deletedId = data.deleted._id;
+        const deletedNode = document.getElementById(`${deletedId}`);
+        const list = document.getElementById('message-list');
+        list.removeChild(deletedNode);
+      });
+  }
   const saveButton = document.getElementById('save');
 
   saveButton.addEventListener('click', postMessage);
