@@ -1,13 +1,18 @@
 /** @format */
+
+/** @format */
 document.addEventListener('DOMContentLoaded', () => {
   const textArea = document.getElementById('desc');
   textArea.addEventListener('input', handleInput);
+  const messageArr = [];
 
   function getMessages() {
     fetch('/messages/getMessages')
       .then((res) => res.json())
       .then((data) => {
         console.log('data from getMessages', data);
+        messageArr.push(data);
+
         showMessages(data);
 
         // for (let i = 0; i < data.messages.length; i++) {
@@ -23,8 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // }
       });
   }
-
-  getMessages();
 
   function showMessages(msg) {
     console.log('msg', msg);
@@ -66,6 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('data in post message', data);
         showMessages(data);
       })
+      .then(() => setCookie(password))
       .catch((err) => console.log(err));
   }
 
@@ -88,7 +92,20 @@ document.addEventListener('DOMContentLoaded', () => {
         list.removeChild(deletedNode);
       });
   }
+
+  function setCookie(pass) {
+    fetch('/auth/setCookie', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ password: pass }),
+    }).then((res) => res.json());
+  }
+
   const saveButton = document.getElementById('save');
 
   saveButton.addEventListener('click', postMessage);
+
+  getMessages();
 });
