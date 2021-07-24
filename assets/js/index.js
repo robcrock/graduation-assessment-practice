@@ -13,8 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
       .then((data) => {
         console.log('data from getMessages', data);
         messageArr.push(data);
-
-        showMessages(data);
+        const messageList = document.getElementById('message-list');
+        if (data.messages.length !== messageList.childElementCount)
+          showMessages(data);
 
         // for (let i = 0; i < data.messages.length; i++) {
         //   const message = document.createElement('li');
@@ -31,7 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function showMessages(msg) {
-    console.log('msg', msg);
+    console.log('msg', msg.messages.length);
+
     for (let i = 0; i < msg.messages.length; i++) {
       const message = document.createElement('li');
       const deleteButton = document.createElement('button');
@@ -44,6 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
       deleteButton.addEventListener('click', deleteMessage);
       count = messagList.childElementCount;
     }
+    return;
   }
 
   function handleInput(e) {
@@ -112,11 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   saveButton.addEventListener('click', postMessage);
 
-  // setInterval(() => {
-  //   const messageList = document.getElementById('message-list');
-  //   console.log(messageList.childElementCount);
-  //   if (messageList.childElementCount !== count) getMessages();
-  // }, 2000);
+  setInterval(() => getMessages(), 2000);
 
   getMessages();
 });
