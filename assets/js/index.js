@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const textArea = document.getElementById('desc');
   textArea.addEventListener('input', handleInput);
   const messageArr = [];
+  let count;
 
   function getMessages() {
     fetch('/messages/getMessages')
@@ -41,6 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const messageList = document.getElementById('message-list');
       messageList.appendChild(message);
       deleteButton.addEventListener('click', deleteMessage);
+      count = messagList.childElementCount;
     }
   }
 
@@ -109,6 +111,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const saveButton = document.getElementById('save');
 
   saveButton.addEventListener('click', postMessage);
+
+  // setInterval(() => {
+  //   const messageList = document.getElementById('message-list');
+  //   console.log(messageList.childElementCount);
+  //   if (messageList.childElementCount !== count) getMessages();
+  // }, 2000);
 
   getMessages();
 });
