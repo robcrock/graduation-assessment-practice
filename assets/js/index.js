@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('data in post message', data);
         showMessages(data);
       })
-      .then(() => setCookie(password))
+      // .then(() => setCookie(password))
       .catch((err) => console.log(err));
   }
 
@@ -93,15 +93,18 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   }
 
-  function setCookie(pass) {
-    fetch('/auth/setCookie', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ password: pass }),
-    }).then((res) => res.json());
-  }
+  // function setCookie(pass) {
+  //   fetch('/auth/setCookie', {
+  //     method: 'POST',
+  //     credentials: 'include',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify({ password: pass }),
+  //   })
+  //     .then((res) => res.json())
+  //     .then((data) => console.log('cookie', data));
+  // }
 
   const saveButton = document.getElementById('save');
 

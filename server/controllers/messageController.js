@@ -36,10 +36,15 @@ messageController.deleteMessages = async (req, res, next) => {
     const { _id } = req.body;
     console.log('_id', _id);
 
-    const correctId = await models.Message.findOneAndDelete({ _id: _id });
-    console.log('correctId', correctId);
-    res.locals.deleted = correctId;
-    return next();
+    const foundMessage = await models.Message.findOne({ _id: _id });
+
+    if (req.cookies.pass === foundMessage.password) {
+      const correctId = await models.Message.findOneAndDelete({ _id: _id });
+      res.locals.deleted = correctId;
+      return next();
+    } else {
+      return next();
+    }
   } catch (err) {
     return next(err);
   }
